@@ -1,7 +1,7 @@
 package app
 
 import (
-	"template/internal/adapters/outbound/http"
+	httpclients "template/internal/adapters/outbound/http-clients"
 	"template/internal/config"
 	"template/internal/core/upwardli"
 	"template/internal/logger"
@@ -13,8 +13,8 @@ type clients struct {
 	UpwardliPartner upwardli.PartnerClient
 }
 
-func newClients(config config.Config, logger logger.Logger) *clients {
-	upwardliPartner, err := http.NewUpwardliPartnerClient(http.UpwardliPartnerClientConfig{
+func newClients(config config.Config, logger logger.Logger) clients {
+	upwardliPartner, err := httpclients.NewUpwardliPartnerClient(httpclients.UpwardliPartnerClientConfig{
 		Config: config.Upwardli(),
 		Scope:  nil,
 	})
@@ -22,7 +22,7 @@ func newClients(config config.Config, logger logger.Logger) *clients {
 		logger.Fatal("failed to create upwardli partner client", zap.Error(err))
 	}
 
-	return &clients{
+	return clients{
 		UpwardliPartner: upwardliPartner,
 	}
 }

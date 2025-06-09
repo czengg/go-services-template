@@ -10,8 +10,8 @@ type cronjobs struct {
 	logger logger.Logger
 }
 
-func newCronJobs(logger logger.Logger) *cronjobs {
-	return &cronjobs{
+func newCronJobs(logger logger.Logger) cronjobs {
+	return cronjobs{
 		logger: logger,
 	}
 }

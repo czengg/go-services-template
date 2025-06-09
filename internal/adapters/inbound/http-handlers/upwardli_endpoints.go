@@ -1,4 +1,4 @@
-package http
+package httphandlers
 
 import (
 	"github.com/gorilla/mux"

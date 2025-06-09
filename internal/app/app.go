@@ -9,7 +9,7 @@ import (
 )
 
 type App struct {
-	Server *router
+	Server router
 }
 
 func NewApp(cfg config.Config, logger logger.Logger) *App {
@@ -23,21 +23,12 @@ func NewApp(cfg config.Config, logger logger.Logger) *App {
 	cronjobs.setupCronJobs()
 
 	repos := newRepositories(database, logger)
-	if repos == nil {
-		logger.Fatal("Failed to create repositories")
-	}
 
 	clients := newClients(cfg, logger)
-	if clients == nil {
-		logger.Fatal("Failed to create clients")
-	}
 
-	services := newServices(cfg, logger, *repos, *clients)
-	if services == nil {
-		logger.Fatal("Failed to create services")
-	}
+	services := newServices(cfg, logger, repos, clients)
 
-	router := newRouter(*services)
+	router := newRouter(services)
 
 	return &App{
 		Server: router,

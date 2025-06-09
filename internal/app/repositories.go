@@ -11,13 +11,13 @@ type repositories struct {
 	Repository repository.Repository
 }
 
-func newRepositories(db *sqlx.DB, logger logger.Logger) *repositories {
+func newRepositories(db *sqlx.DB, logger logger.Logger) repositories {
 	repo := repository.NewRepository(db, logger)
 	if repo == nil {
 		logger.Fatal("failed to create repository")
 	}
 
-	return &repositories{
+	return repositories{
 		Repository: repo,
 	}
 }
