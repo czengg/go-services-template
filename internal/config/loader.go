@@ -1,12 +1,12 @@
 package config
 
 import (
-	"elevate/internal/aws"
-	"elevate/internal/db"
-	"elevate/internal/plaid"
-	"elevate/internal/upwardli"
 	"os"
 	"strings"
+	"template/internal/adapters/outbound/persistence/mysql"
+	"template/internal/core/aws"
+	"template/internal/core/plaid"
+	"template/internal/core/upwardli"
 
 	"github.com/joho/godotenv"
 	plaidSDK "github.com/plaid/plaid-go/v32/plaid"
@@ -35,7 +35,7 @@ func loadFromEnv() (*config, error) {
 		interServiceSecret:   os.Getenv("INTER_SERVICE_SECRET"),
 		clientJWTTokenSecret: os.Getenv("CLIENT_JWT_TOKEN_SECRET"),
 
-		dbConfig: db.Config{
+		dbConfig: mysql.Config{
 			User:     os.Getenv("DB_USER"),
 			Endpoint: os.Getenv("DB_ENDPOINT"),
 			Port:     os.Getenv("DB_PORT"),

@@ -220,7 +220,7 @@ func (l *logger) With(fields ...zap.Field) Logger {
 func (l *logger) WithUserID(userID string) Logger {
 	// Set user in Sentry scope
 	if l.config.SentryDSN != "" {
-		setUser(userID, "", "")
+		setUser(userID, "")
 	}
 
 	return l.With(zap.String("user_id", userID))

@@ -1,10 +1,11 @@
 package config
 
 import (
-	"elevate/internal/aws"
-	"elevate/internal/db"
-	"elevate/internal/plaid"
-	"elevate/internal/upwardli"
+	"fmt"
+	"template/internal/adapters/outbound/persistence/mysql"
+	"template/internal/core/aws"
+	"template/internal/core/plaid"
+	"template/internal/core/upwardli"
 )
 
 type Config interface {
@@ -12,8 +13,9 @@ type Config interface {
 	IsProduction() bool
 	IsLocal() bool
 	Port() string
+
 	// Database configs
-	DB() db.Config
+	DB() mysql.Config
 
 	// External services
 	AWS() aws.Config
@@ -35,7 +37,7 @@ type config struct {
 	sentryDSN            string
 	interServiceSecret   string
 	clientJWTTokenSecret string
-	dbConfig             db.Config
+	dbConfig             mysql.Config
 	awsConfig            aws.Config
 	plaidConfig          plaid.Config
 	upwardliConfig       upwardli.Config
@@ -43,7 +45,7 @@ type config struct {
 
 func Load() (Config, error) {
 	if err := loadEnvFile(); err != nil {
-		// Log but don't fail - env vars might be set directly
+		fmt.Println("Failed to load .env file")
 	}
 
 	cfg, err := loadFromEnv()
@@ -62,7 +64,7 @@ func (c *config) Env() string                  { return c.env }
 func (c *config) IsProduction() bool           { return c.env == "PRODUCTION" }
 func (c *config) IsLocal() bool                { return c.local }
 func (c *config) Port() string                 { return c.port }
-func (c *config) DB() db.Config                { return c.dbConfig }
+func (c *config) DB() mysql.Config             { return c.dbConfig }
 func (c *config) AWS() aws.Config              { return c.awsConfig }
 func (c *config) Plaid() plaid.Config          { return c.plaidConfig }
 func (c *config) Upwardli() upwardli.Config    { return c.upwardliConfig }

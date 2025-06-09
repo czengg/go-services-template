@@ -14,7 +14,7 @@ A flexible and extensible HTTP client package that provides optional authenticat
 ## Installation
 
 ```
-import "elevate/packages/api-client-go"
+import "template/packages/api-client-go"
 ```
 
 ## Core Components

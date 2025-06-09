@@ -1,11 +1,11 @@
 package main
 
 import (
-	"elevate/internal/config"
-	"elevate/internal/logger"
-	"elevate/internal/router"
 	"fmt"
 	"log"
+	"template/internal/app"
+	"template/internal/config"
+	"template/internal/logger"
 
 	"go.uber.org/zap"
 )
@@ -23,7 +23,6 @@ func main() {
 		log.Fatalf("Failed to load config: %v", err)
 	}
 
-	// Initialize logger with Sentry
 	loggerInstance, err := logger.New(logger.Config{
 		Environment: cfg.Env(),
 		ServiceName: "cabbage",
@@ -36,7 +35,6 @@ func main() {
 	}
 	defer loggerInstance.Close()
 
-	// Create application context
 	var c Ctx
 	c.config = cfg
 	c.logger = loggerInstance
@@ -47,8 +45,8 @@ func main() {
 		zap.Bool("local", cfg.IsLocal()),
 	)
 
-	app := config.NewApp(cfg, c.logger)
-	app.Server.Serve(router.Config{Port: cfg.Port()}, c.logger)
+	app := app.NewApp(cfg, c.logger)
+	app.Server.Serve(cfg.Port(), c.logger)
 }
 
 func getLogLevel(cfg config.Config) string {
