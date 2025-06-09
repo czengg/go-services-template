@@ -5,6 +5,9 @@ import (
 )
 
 func AcceptUpwardliEndpoints(r *mux.Router, handler UpwardliHandler) {
+
+	// TODO: authentication middleware belong here
+
 	upwardliUserRouter := r.PathPrefix("/me/upwardli").Subrouter()
 	upwardliUserRouter.HandleFunc("/webhooks", handler.CreateWebhookHandler).Methods("POST")
 	upwardliUserRouter.HandleFunc("/webhooks/all", handler.CreateAllWebhooksHandler).Methods("POST")
