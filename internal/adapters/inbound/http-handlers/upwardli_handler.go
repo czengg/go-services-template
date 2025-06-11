@@ -38,8 +38,8 @@ func (h *upwardliHandler) CreateAllWebhooksHandler(w http.ResponseWriter, r *htt
 
 func (h *upwardliHandler) CreateWebhookHandler(w http.ResponseWriter, r *http.Request) {
 	err := h.service.CreateWebhook(r.Context(),
-		upwardli.SubscriptionTopic(r.URL.Query().Get("webhookName")),
 		r.URL.Query().Get("endpoint"),
+		upwardli.SubscriptionTopic(r.URL.Query().Get("webhookName")),
 	)
 
 	if err != nil {

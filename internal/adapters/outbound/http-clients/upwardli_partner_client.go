@@ -164,10 +164,10 @@ func (c *partnerClient) GetAllWebhooks(ctx context.Context) ([]upwardli.Webhook,
 	return webhooks, nil
 }
 
-func (c *partnerClient) CreateWebhook(ctx context.Context, webhookReq upwardli.CreateWebhookRequest) (*upwardli.Webhook, error) {
+func (c *partnerClient) CreateWebhook(ctx context.Context, endpoint string, topic string) (*upwardli.Webhook, error) {
 	resp, err := c.client.Request(ctx, "/webhooks/registrations",
 		apiClient.WithMethod(apiClient.MethodPost),
-		apiClient.WithBody(webhookReq))
+		apiClient.WithBody(map[string]string{"endpoint": endpoint, "webhook_name": topic}))
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create webhook")
 	}

@@ -11,7 +11,7 @@ import (
 
 type WebhookProcessor interface {
 	CreateAllWebhooks(ctx context.Context, endpoint string) error
-	CreateWebhook(ctx context.Context, topicName SubscriptionTopic, endpoint string) error
+	CreateWebhook(ctx context.Context, endpoint string, topicName SubscriptionTopic) error
 	GetWebhooks(ctx context.Context) ([]Webhook, error)
 	DeleteWebhook(ctx context.Context, id string) error
 }
@@ -65,7 +65,7 @@ func (w *webhookProcessor) CreateAllWebhooks(ctx context.Context, endpoint strin
 	successCount := 0
 
 	for _, topic := range webhookTopics {
-		err := w.CreateWebhook(ctx, topic, endpoint)
+		err := w.CreateWebhook(ctx, endpoint, topic)
 		if err != nil {
 			w.logger.Error("failed to create webhook",
 				zap.Error(err),
@@ -88,18 +88,12 @@ func (w *webhookProcessor) CreateAllWebhooks(ctx context.Context, endpoint strin
 	return nil
 }
 
-func (w *webhookProcessor) CreateWebhook(ctx context.Context, topicName SubscriptionTopic, endpoint string) error {
+func (w *webhookProcessor) CreateWebhook(ctx context.Context, endpoint string, topicName SubscriptionTopic) error {
 	if endpoint == "" {
 		return errors.New("endpoint is required")
 	}
 
-	// Create webhook via Upwardli API
-	webhookReq := CreateWebhookRequest{
-		WebhookName: topicName,
-		Endpoint:    endpoint,
-	}
-
-	resp, err := w.partnerClient.CreateWebhook(ctx, webhookReq)
+	resp, err := w.partnerClient.CreateWebhook(ctx, endpoint, string(topicName))
 	if err != nil {
 		return errors.Wrap(err, "failed to create webhook via Upwardli")
 	}

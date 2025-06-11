@@ -11,14 +11,9 @@ type Repository interface {
 	SoftDeleteUpwardliWebhook(ctx context.Context, id string) error
 }
 
-type CreateWebhookRequest struct {
-	WebhookName SubscriptionTopic `json:"webhook_name"`
-	Endpoint    string            `json:"endpoint"`
-}
-
 type PartnerClient interface {
 	GetAllWebhooks(ctx context.Context) ([]Webhook, error)
-	CreateWebhook(ctx context.Context, webhook CreateWebhookRequest) (*Webhook, error)
+	CreateWebhook(ctx context.Context, endpoint string, topic string) (*Webhook, error)
 	DeleteWebhook(ctx context.Context, webhookID string) error
 }
 
