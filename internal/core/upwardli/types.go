@@ -1,5 +1,7 @@
 package upwardli
 
+import "time"
+
 // Internal types
 type subscriptionTopic string
 
@@ -34,7 +36,7 @@ type webhook struct {
 	PartnerID   string            `json:"partnerId" db:"partner_id" external:"partner_id"`
 	Status      string            `json:"status" db:"status" external:"status"`
 	Failures    int64             `json:"failures" db:"failures" external:"failures"`
-	LastFailure string            `json:"lastFailure" db:"last_failure" external:"last_failure"`
+	LastFailure *time.Time        `json:"lastFailure" db:"last_failure" external:"last_failure"`
 	Deleted     bool              `json:"deleted" db:"deleted" external:"-"`
 
 	// only available when registering a webhook

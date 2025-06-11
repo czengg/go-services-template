@@ -1,22 +1,23 @@
 package httphandlers
 
-import (
-	"github.com/gorilla/mux"
-)
+import "github.com/go-chi/chi/v5"
 
-func AcceptUpwardliEndpoints(r *mux.Router, handler UpwardliHandler) {
+func AcceptUpwardliEndpoints(r *chi.Mux, handler UpwardliHandler) {
 
 	// TODO: authentication middleware belong here
 
-	upwardliUserRouter := r.PathPrefix("/me/upwardli").Subrouter()
-	upwardliUserRouter.HandleFunc("/webhooks", handler.CreateWebhookHandler).Methods("POST")
-	upwardliUserRouter.HandleFunc("/webhooks/all", handler.CreateAllWebhooksHandler).Methods("POST")
-	upwardliUserRouter.HandleFunc("/webhooks", handler.GetWebhooksHandler).Methods("GET")
-	upwardliUserRouter.HandleFunc("/webhooks/{id}", handler.DeleteWebhookHandler).Methods("DELETE")
+	r.Route("/me/upwardli", func(r chi.Router) {
+		r.Post("/webhooks", handler.CreateWebhookHandler)
+		r.Post("/webhooks/all", handler.CreateAllWebhooksHandler)
+		r.Get("/webhooks", handler.GetWebhooksHandler)
+		r.Delete("/webhooks/{id}", handler.DeleteWebhookHandler)
+	})
 
-	upwardliAdminRouter := r.PathPrefix("/admin/users/{userId}/upwardli").Subrouter()
-	upwardliAdminRouter.HandleFunc("/webhooks", handler.CreateWebhookHandler).Methods("POST")
-	upwardliAdminRouter.HandleFunc("/webhooks/all", handler.CreateAllWebhooksHandler).Methods("POST")
-	upwardliAdminRouter.HandleFunc("/webhooks", handler.GetWebhooksHandler).Methods("GET")
-	upwardliAdminRouter.HandleFunc("/webhooks/{id}", handler.DeleteWebhookHandler).Methods("DELETE")
+	r.Route("/admin/users/{userId}/upwardli", func(r chi.Router) {
+		r.Post("/webhooks", handler.CreateWebhookHandler)
+		r.Post("/webhooks/all", handler.CreateAllWebhooksHandler)
+		r.Get("/webhooks", handler.GetWebhooksHandler)
+		r.Delete("/webhooks/{id}", handler.DeleteWebhookHandler)
+	})
+
 }

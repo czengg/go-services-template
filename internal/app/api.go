@@ -6,8 +6,8 @@ import (
 	httphandlers "template/internal/adapters/inbound/http-handlers"
 	"template/internal/logger"
 
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 )
 
 type router struct {
@@ -21,17 +21,17 @@ func newRouter(s services) router {
 }
 
 func (router *router) Serve(port string, logger logger.Logger) {
-	r := mux.NewRouter()
+	r := chi.NewRouter()
 
 	httphandlers.AcceptUpwardliEndpoints(r, router.Upwardli)
 
-	corsOptions := []handlers.CORSOption{
-		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
-		handlers.AllowedMethods([]string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete, http.MethodPatch, http.MethodOptions}),
-		handlers.AllowedOrigins([]string{"*"}),
-		handlers.MaxAge(3600),
-	}
+	r.Use(cors.Handler(cors.Options{
+		AllowedHeaders: []string{"Content-Type", "Authorization"},
+		AllowedMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete, http.MethodPatch, http.MethodOptions},
+		AllowedOrigins: []string{"*"},
+		MaxAge:         3600,
+	}))
 
 	logger.Info("Starting server...")
-	log.Fatal(http.ListenAndServe(port, handlers.CORS(corsOptions...)(r)))
+	log.Fatal(http.ListenAndServe(port, r))
 }
