@@ -1,7 +1,7 @@
 package app
 
 import (
-	"template/internal/adapters/outbound/persistence/repository"
+	"template/internal/adapters/outbound/persistence/mysql/repository"
 	"template/internal/logger"
 
 	"github.com/jmoiron/sqlx"

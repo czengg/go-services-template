@@ -19,7 +19,7 @@ type upwardliHandler struct {
 	cfg     config.Config
 }
 
-func NewUpwardliHandler(service upwardli.Service, cfg config.Config) UpwardliHandler {
+func NewUpwardliHandler(cfg config.Config, service upwardli.Service) UpwardliHandler {
 	return &upwardliHandler{
 		service: service,
 		cfg:     cfg,

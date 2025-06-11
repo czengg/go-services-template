@@ -28,7 +28,7 @@ func NewApp(cfg config.Config, logger logger.Logger) *App {
 
 	services := newServices(cfg, logger, repos, clients)
 
-	router := newRouter(services)
+	router := newRouter(cfg, services)
 
 	return &App{
 		Server: router,

@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	httphandlers "template/internal/adapters/inbound/http-handlers"
+	"template/internal/config"
 	"template/internal/logger"
 
 	"github.com/go-chi/chi/v5"
@@ -14,9 +15,9 @@ type router struct {
 	Upwardli httphandlers.UpwardliHandler
 }
 
-func newRouter(s services) router {
+func newRouter(cfg config.Config, s services) router {
 	return router{
-		Upwardli: httphandlers.NewUpwardliHandler(s.upwardli),
+		Upwardli: httphandlers.NewUpwardliHandler(cfg, s.upwardli),
 	}
 }
 
