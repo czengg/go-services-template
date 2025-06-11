@@ -8,4 +8,5 @@ type Config struct {
 	ClientSecret         string
 	EmbeddedComponentURL string
 	FBOAccountNumber     string
+	WebhookURL           string
 }

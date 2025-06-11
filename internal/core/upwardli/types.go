@@ -28,17 +28,17 @@ const (
 )
 
 type webhook struct {
-	ID          string            `json:"id" db:"id" external:"id"`
-	WebhookName subscriptionTopic `json:"webhookName" db:"webhook_name" external:"webhook_name"`
-	CreatedAt   string            `json:"createdAt" db:"created_at" external:"-"`
-	UpdatedAt   string            `json:"updatedAt" db:"updated_at" external:"-"`
-	Endpoint    string            `json:"endpoint" db:"endpoint" external:"endpoint"`
-	PartnerID   string            `json:"partnerId" db:"partner_id" external:"partner_id"`
-	Status      string            `json:"status" db:"status" external:"status"`
-	Failures    int64             `json:"failures" db:"failures" external:"failures"`
-	LastFailure *time.Time        `json:"lastFailure" db:"last_failure" external:"last_failure"`
-	Deleted     bool              `json:"deleted" db:"deleted" external:"-"`
+	ID          string
+	WebhookName subscriptionTopic
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	Endpoint    string
+	PartnerID   string
+	Status      string
+	Failures    int64
+	LastFailure *time.Time
+	Deleted     bool
 
 	// only available when registering a webhook
-	RegistrationID string `json:"registrationId" db:"-" external:"registration_id"`
+	RegistrationID string
 }

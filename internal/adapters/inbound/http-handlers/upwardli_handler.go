@@ -2,7 +2,9 @@ package httphandlers
 
 import (
 	"net/http"
+	"template/internal/config"
 	"template/internal/core/upwardli"
+	"template/packages/common-go"
 )
 
 type UpwardliHandler interface {
@@ -14,26 +16,61 @@ type UpwardliHandler interface {
 
 type upwardliHandler struct {
 	service upwardli.Service
+	cfg     config.Config
 }
 
-func NewUpwardliHandler(service upwardli.Service) UpwardliHandler {
+func NewUpwardliHandler(service upwardli.Service, cfg config.Config) UpwardliHandler {
 	return &upwardliHandler{
 		service: service,
+		cfg:     cfg,
 	}
 }
 
 func (h *upwardliHandler) CreateAllWebhooksHandler(w http.ResponseWriter, r *http.Request) {
+	err := h.service.CreateAllWebhooks(r.Context(), h.cfg.Upwardli().WebhookURL)
+	if err != nil {
+		common.WriteError(w, err)
+		return
+	}
 
+	common.WriteJSON(w, http.StatusOK, "Webhooks created successfully")
 }
 
 func (h *upwardliHandler) CreateWebhookHandler(w http.ResponseWriter, r *http.Request) {
+	err := h.service.CreateWebhook(r.Context(),
+		upwardli.SubscriptionTopic(r.URL.Query().Get("webhookName")),
+		r.URL.Query().Get("endpoint"),
+	)
 
+	if err != nil {
+		common.WriteError(w, err)
+		return
+	}
+
+	common.WriteJSON(w, http.StatusOK, "Webhook created successfully")
 }
 
 func (h *upwardliHandler) GetWebhooksHandler(w http.ResponseWriter, r *http.Request) {
+	webhooks, err := h.service.GetWebhooks(r.Context())
+	if err != nil {
+		common.WriteError(w, err)
+		return
+	}
 
+	response := make([]WebhookResponse, len(webhooks))
+	for i, webhook := range webhooks {
+		response[i] = WebhookToResponse(webhook)
+	}
+
+	common.WriteJSON(w, http.StatusOK, response)
 }
 
 func (h *upwardliHandler) DeleteWebhookHandler(w http.ResponseWriter, r *http.Request) {
+	err := h.service.DeleteWebhook(r.Context(), r.URL.Query().Get("id"))
+	if err != nil {
+		common.WriteError(w, err)
+		return
+	}
 
+	common.WriteJSON(w, http.StatusOK, "Webhook deleted successfully")
 }
