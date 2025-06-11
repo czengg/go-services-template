@@ -3,14 +3,14 @@ package app
 import (
 	httpclients "template/internal/adapters/outbound/http-clients"
 	"template/internal/config"
-	"template/internal/core/upwardli"
+	upwardli "template/internal/core/webhooks"
 	"template/internal/logger"
 
 	"go.uber.org/zap"
 )
 
 type clients struct {
-	UpwardliPartner upwardli.PartnerClient
+	UpwardliPartner upwardli.Client
 }
 
 func newClients(config config.Config, logger logger.Logger) clients {

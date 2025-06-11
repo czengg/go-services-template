@@ -1,4 +1,4 @@
-package upwardli
+package banking
 
 type Config struct {
 	BaseURL              string

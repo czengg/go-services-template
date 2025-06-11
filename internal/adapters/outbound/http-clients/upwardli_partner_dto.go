@@ -1,7 +1,7 @@
 package httpclients
 
 import (
-	"template/internal/core/upwardli"
+	webhooks "template/internal/core/webhooks"
 	"time"
 )
 
@@ -17,10 +17,10 @@ type UpwardliWebhookDTO struct {
 	RegistrationID string `json:"registration_id,omitempty"`
 }
 
-func (dto UpwardliWebhookDTO) ToDomain() upwardli.Webhook {
-	return upwardli.Webhook{
+func (dto UpwardliWebhookDTO) ToDomain() webhooks.Webhook {
+	return webhooks.Webhook{
 		ID:          dto.ID,
-		WebhookName: upwardli.SubscriptionTopic(dto.WebhookName),
+		WebhookName: webhooks.SubscriptionTopic(dto.WebhookName),
 		Endpoint:    dto.Endpoint,
 		PartnerID:   dto.PartnerID,
 		Status:      dto.Status,

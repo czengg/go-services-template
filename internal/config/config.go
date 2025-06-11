@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"template/internal/adapters/outbound/persistence/mysql"
 	"template/internal/core/aws"
+	banking "template/internal/core/banking"
 	"template/internal/core/plaid"
-	"template/internal/core/upwardli"
 )
 
 type Config interface {
@@ -20,7 +20,7 @@ type Config interface {
 	// External services
 	AWS() aws.Config
 	Plaid() plaid.Config
-	Upwardli() upwardli.Config
+	Upwardli() banking.Config
 
 	// Internal services
 	InterServiceSecret() string
@@ -40,7 +40,7 @@ type config struct {
 	dbConfig             mysql.Config
 	awsConfig            aws.Config
 	plaidConfig          plaid.Config
-	upwardliConfig       upwardli.Config
+	bankingConfig        banking.Config
 }
 
 func Load() (Config, error) {
@@ -67,7 +67,7 @@ func (c *config) Port() string                 { return c.port }
 func (c *config) DB() mysql.Config             { return c.dbConfig }
 func (c *config) AWS() aws.Config              { return c.awsConfig }
 func (c *config) Plaid() plaid.Config          { return c.plaidConfig }
-func (c *config) Upwardli() upwardli.Config    { return c.upwardliConfig }
+func (c *config) Upwardli() banking.Config     { return c.bankingConfig }
 func (c *config) InterServiceSecret() string   { return c.interServiceSecret }
 func (c *config) ClientJWTTokenSecret() string { return c.clientJWTTokenSecret }
 func (c *config) SentryDSN() string            { return c.sentryDSN }

@@ -3,7 +3,7 @@ package httphandlers
 import (
 	"net/http"
 	"template/internal/config"
-	"template/internal/core/upwardli"
+	webhooks "template/internal/core/webhooks"
 	"template/packages/common-go"
 )
 
@@ -15,19 +15,19 @@ type UpwardliHandler interface {
 }
 
 type upwardliHandler struct {
-	service upwardli.Service
-	cfg     config.Config
+	webhooksService webhooks.Service
+	cfg             config.Config
 }
 
-func NewUpwardliHandler(cfg config.Config, service upwardli.Service) UpwardliHandler {
+func NewUpwardliHandler(cfg config.Config, service webhooks.Service) UpwardliHandler {
 	return &upwardliHandler{
-		service: service,
-		cfg:     cfg,
+		webhooksService: service,
+		cfg:             cfg,
 	}
 }
 
 func (h *upwardliHandler) CreateAllWebhooksHandler(w http.ResponseWriter, r *http.Request) {
-	err := h.service.CreateAllWebhooks(r.Context(), h.cfg.Upwardli().WebhookURL)
+	err := h.webhooksService.CreateAllWebhooks(r.Context(), h.cfg.Upwardli().WebhookURL)
 	if err != nil {
 		common.WriteError(w, err)
 		return
@@ -37,9 +37,9 @@ func (h *upwardliHandler) CreateAllWebhooksHandler(w http.ResponseWriter, r *htt
 }
 
 func (h *upwardliHandler) CreateWebhookHandler(w http.ResponseWriter, r *http.Request) {
-	err := h.service.CreateWebhook(r.Context(),
+	err := h.webhooksService.CreateWebhook(r.Context(),
 		r.URL.Query().Get("endpoint"),
-		upwardli.SubscriptionTopic(r.URL.Query().Get("webhookName")),
+		webhooks.SubscriptionTopic(r.URL.Query().Get("webhookName")),
 	)
 
 	if err != nil {
@@ -51,7 +51,7 @@ func (h *upwardliHandler) CreateWebhookHandler(w http.ResponseWriter, r *http.Re
 }
 
 func (h *upwardliHandler) GetWebhooksHandler(w http.ResponseWriter, r *http.Request) {
-	webhooks, err := h.service.GetWebhooks(r.Context())
+	webhooks, err := h.webhooksService.GetWebhooks(r.Context())
 	if err != nil {
 		common.WriteError(w, err)
 		return
@@ -66,7 +66,7 @@ func (h *upwardliHandler) GetWebhooksHandler(w http.ResponseWriter, r *http.Requ
 }
 
 func (h *upwardliHandler) DeleteWebhookHandler(w http.ResponseWriter, r *http.Request) {
-	err := h.service.DeleteWebhook(r.Context(), r.URL.Query().Get("id"))
+	err := h.webhooksService.DeleteWebhook(r.Context(), r.URL.Query().Get("id"))
 	if err != nil {
 		common.WriteError(w, err)
 		return

@@ -7,7 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"template/internal/core/upwardli"
+	banking "template/internal/core/banking"
+	webhooks "template/internal/core/webhooks"
 	apiClient "template/packages/api-client-go"
 	"template/packages/common-go"
 
@@ -15,7 +16,7 @@ import (
 )
 
 type UpwardliPartnerClientConfig struct {
-	upwardli.Config
+	banking.Config
 	Scope *string
 }
 
@@ -122,7 +123,7 @@ func (p *partnerTokenProvider) GetToken(ctx context.Context) (string, error) {
 	return p.token, nil
 }
 
-func NewUpwardliPartnerClient(cfg UpwardliPartnerClientConfig) (upwardli.PartnerClient, error) {
+func NewUpwardliPartnerClient(cfg UpwardliPartnerClientConfig) (webhooks.Client, error) {
 	if cfg.Scope == nil {
 		defaultScope := "api:read api:write"
 		cfg.Scope = &defaultScope
@@ -145,26 +146,26 @@ func NewUpwardliPartnerClient(cfg UpwardliPartnerClientConfig) (upwardli.Partner
 	}, nil
 }
 
-func (c *partnerClient) GetAllWebhooks(ctx context.Context) ([]upwardli.Webhook, error) {
+func (c *partnerClient) GetAllWebhooks(ctx context.Context) ([]webhooks.Webhook, error) {
 	resp, err := c.client.Request(ctx, "/webhooks/registrations", apiClient.WithMethod(apiClient.MethodGet))
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get webhooks")
 	}
 
 	var webhooksResp struct {
-		Results []upwardli.Webhook `external:"results"`
+		Results []webhooks.Webhook `external:"results"`
 	}
 	if err := common.UnmarshalExternal(resp, &webhooksResp); err != nil {
 		return nil, errors.Wrap(err, "error parsing webhook response")
 	}
 
-	webhooks := make([]upwardli.Webhook, len(webhooksResp.Results))
+	webhooks := make([]webhooks.Webhook, len(webhooksResp.Results))
 	copy(webhooks, webhooksResp.Results)
 
 	return webhooks, nil
 }
 
-func (c *partnerClient) CreateWebhook(ctx context.Context, endpoint string, topic string) (*upwardli.Webhook, error) {
+func (c *partnerClient) CreateWebhook(ctx context.Context, endpoint string, topic string) (*webhooks.Webhook, error) {
 	resp, err := c.client.Request(ctx, "/webhooks/registrations",
 		apiClient.WithMethod(apiClient.MethodPost),
 		apiClient.WithBody(map[string]string{"endpoint": endpoint, "webhook_name": topic}))
@@ -172,7 +173,7 @@ func (c *partnerClient) CreateWebhook(ctx context.Context, endpoint string, topi
 		return nil, errors.Wrap(err, "failed to create webhook")
 	}
 
-	var respBody upwardli.Webhook
+	var respBody webhooks.Webhook
 	if err := common.UnmarshalExternal(resp, &respBody); err != nil {
 		return nil, errors.Wrap(err, "error parsing webhook creation response")
 	}

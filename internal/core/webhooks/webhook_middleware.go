@@ -1,4 +1,4 @@
-package upwardli
+package webhooks
 
 import (
 	"bytes"

@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"template/internal/core/upwardli"
+	webhooks "template/internal/core/webhooks"
 	"template/internal/logger"
 
 	"template/internal/adapters/outbound/persistence/mysql/sqlc"
@@ -10,7 +10,7 @@ import (
 )
 
 type Repository interface {
-	upwardli.Repository
+	webhooks.Repository
 }
 
 type repository struct {

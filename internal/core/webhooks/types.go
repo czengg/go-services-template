@@ -1,10 +1,11 @@
-package upwardli
+package webhooks
 
 import "time"
 
 // Internal types
 type subscriptionTopic string
 
+// whitelisted topics
 const (
 	SubscriptionTopicConsumerCreated                  subscriptionTopic = "Consumer.Created"
 	SubscriptionTopicConsumerUpdated                  subscriptionTopic = "Consumer.Updated"

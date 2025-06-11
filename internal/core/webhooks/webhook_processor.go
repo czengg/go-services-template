@@ -1,4 +1,4 @@
-package upwardli
+package webhooks
 
 import (
 	"context"
@@ -17,14 +17,14 @@ type WebhookProcessor interface {
 }
 
 type webhookProcessor struct {
-	logger        logger.Logger
-	partnerClient PartnerClient
-	repo          Repository
+	logger logger.Logger
+	client Client
+	repo   Repository
 }
 
 func NewWebhookProcessor(
 	logger logger.Logger,
-	partnerClient PartnerClient,
+	client Client,
 	repo Repository,
 ) WebhookProcessor {
 	if logger == nil {
@@ -32,9 +32,9 @@ func NewWebhookProcessor(
 	}
 
 	return &webhookProcessor{
-		logger:        logger,
-		partnerClient: partnerClient,
-		repo:          repo,
+		logger: logger,
+		client: client,
+		repo:   repo,
 	}
 }
 
@@ -93,13 +93,13 @@ func (w *webhookProcessor) CreateWebhook(ctx context.Context, endpoint string, t
 		return errors.New("endpoint is required")
 	}
 
-	resp, err := w.partnerClient.CreateWebhook(ctx, endpoint, string(topicName))
+	resp, err := w.client.CreateWebhook(ctx, endpoint, string(topicName))
 	if err != nil {
 		return errors.Wrap(err, "failed to create webhook via Upwardli")
 	}
 
 	// Get all webhooks to find our newly created one
-	webhooksFromClient, err := w.partnerClient.GetAllWebhooks(ctx)
+	webhooksFromClient, err := w.client.GetAllWebhooks(ctx)
 	if err != nil {
 		return errors.Wrap(err, "failed to get webhooks from Upwardli")
 	}
@@ -126,7 +126,7 @@ func (w *webhookProcessor) CreateWebhook(ctx context.Context, endpoint string, t
 	}
 
 	// Save to database
-	err = w.repo.CreateUpwardliWebhook(ctx, *webhookToSave)
+	err = w.repo.CreateBankingWebhook(ctx, *webhookToSave)
 	if err != nil {
 		return errors.Wrap(err, "failed to save webhook to database")
 	}
@@ -140,7 +140,7 @@ func (w *webhookProcessor) CreateWebhook(ctx context.Context, endpoint string, t
 }
 
 func (w *webhookProcessor) GetWebhooks(ctx context.Context) ([]Webhook, error) {
-	webhooks, err := w.repo.GetAllUpwardliWebhooks(ctx)
+	webhooks, err := w.repo.GetAllBankingWebhooks(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get webhooks from database")
 	}
@@ -154,13 +154,13 @@ func (w *webhookProcessor) DeleteWebhook(ctx context.Context, id string) error {
 	}
 
 	// Delete from Upwardli first
-	err := w.partnerClient.DeleteWebhook(ctx, id)
+	err := w.client.DeleteWebhook(ctx, id)
 	if err != nil {
 		return errors.Wrap(err, "failed to delete webhook from Upwardli")
 	}
 
 	// Soft delete from database
-	err = w.repo.SoftDeleteUpwardliWebhook(ctx, id)
+	err = w.repo.SoftDeleteBankingWebhook(ctx, id)
 	if err != nil {
 		w.logger.Error("failed to delete webhook from database, but deleted from Upwardli",
 			zap.Error(err),

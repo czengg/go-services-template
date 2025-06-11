@@ -5,8 +5,8 @@ import (
 	"strings"
 	"template/internal/adapters/outbound/persistence/mysql"
 	"template/internal/core/aws"
+	banking "template/internal/core/banking"
 	"template/internal/core/plaid"
-	"template/internal/core/upwardli"
 
 	"github.com/joho/godotenv"
 	plaidSDK "github.com/plaid/plaid-go/v32/plaid"
@@ -56,7 +56,7 @@ func loadFromEnv() (*config, error) {
 			RedirectURL:   os.Getenv("PLAID_REDIRECT_URL"),
 		},
 
-		upwardliConfig: upwardli.Config{
+		bankingConfig: banking.Config{
 			AuthURL:              os.Getenv("UPWARDLI_AUTH_URL"),
 			APIURL:               os.Getenv("UPWARDLI_API_URL"),
 			ClientID:             os.Getenv("UPWARDLI_CLIENT_ID"),

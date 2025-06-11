@@ -1,8 +1,9 @@
 package httphandlers
 
 import (
-	"template/internal/core/upwardli"
 	"time"
+
+	webhooks "template/internal/core/webhooks"
 )
 
 type WebhookResponse struct {
@@ -18,7 +19,7 @@ type WebhookResponse struct {
 	RegistrationID string  `json:"registrationId,omitempty"`
 }
 
-func WebhookToResponse(w upwardli.Webhook) WebhookResponse {
+func WebhookToResponse(w webhooks.Webhook) WebhookResponse {
 	resp := WebhookResponse{
 		ID:          w.ID,
 		WebhookName: string(w.WebhookName),

@@ -4,11 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"template/internal/adapters/outbound/persistence/mysql/sqlc"
-	"template/internal/core/upwardli"
+	webhooks "template/internal/core/webhooks"
 	"template/packages/common-go"
 )
 
-func (r *repository) CreateUpwardliWebhook(ctx context.Context, webhook upwardli.Webhook) error {
+func (r *repository) CreateBankingWebhook(ctx context.Context, webhook webhooks.Webhook) error {
 	return r.queries.CreateUpwardliWebhook(ctx, sqlc.CreateUpwardliWebhookParams{
 		ID:          webhook.ID,
 		WebhookName: string(webhook.WebhookName),
@@ -20,16 +20,16 @@ func (r *repository) CreateUpwardliWebhook(ctx context.Context, webhook upwardli
 	})
 }
 
-func (r *repository) GetAllUpwardliWebhooks(ctx context.Context) ([]upwardli.Webhook, error) {
-	var webhooks []upwardli.Webhook
+func (r *repository) GetAllBankingWebhooks(ctx context.Context) ([]webhooks.Webhook, error) {
+	var ws []webhooks.Webhook
 	rows, err := r.queries.GetAllUpwardliWebhooks(ctx)
 	if err != nil {
 		return nil, err
 	}
 	for _, row := range rows {
-		webhooks = append(webhooks, upwardli.Webhook{
+		ws = append(ws, webhooks.Webhook{
 			ID:          row.ID,
-			WebhookName: upwardli.SubscriptionTopic(row.WebhookName),
+			WebhookName: webhooks.SubscriptionTopic(row.WebhookName),
 			Endpoint:    row.Endpoint,
 			PartnerID:   row.PartnerID,
 			Status:      row.Status,
@@ -38,9 +38,9 @@ func (r *repository) GetAllUpwardliWebhooks(ctx context.Context) ([]upwardli.Web
 		})
 	}
 
-	return webhooks, nil
+	return ws, nil
 }
 
-func (r *repository) SoftDeleteUpwardliWebhook(ctx context.Context, id string) error {
+func (r *repository) SoftDeleteBankingWebhook(ctx context.Context, id string) error {
 	return r.queries.SoftDeleteUpwardliWebhook(ctx, id)
 }

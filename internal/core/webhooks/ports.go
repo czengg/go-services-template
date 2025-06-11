@@ -1,4 +1,4 @@
-package upwardli
+package webhooks
 
 import (
 	"context"
@@ -6,12 +6,12 @@ import (
 
 // external types
 type Repository interface {
-	GetAllUpwardliWebhooks(ctx context.Context) ([]Webhook, error)
-	CreateUpwardliWebhook(ctx context.Context, webhook Webhook) error
-	SoftDeleteUpwardliWebhook(ctx context.Context, id string) error
+	GetAllBankingWebhooks(ctx context.Context) ([]Webhook, error)
+	CreateBankingWebhook(ctx context.Context, webhook Webhook) error
+	SoftDeleteBankingWebhook(ctx context.Context, id string) error
 }
 
-type PartnerClient interface {
+type Client interface {
 	GetAllWebhooks(ctx context.Context) ([]Webhook, error)
 	CreateWebhook(ctx context.Context, endpoint string, topic string) (*Webhook, error)
 	DeleteWebhook(ctx context.Context, webhookID string) error
