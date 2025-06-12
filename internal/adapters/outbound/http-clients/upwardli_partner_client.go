@@ -15,6 +15,12 @@ import (
 	"github.com/pkg/errors"
 )
 
+type UpwardliPartnerClient interface {
+	webhooks.SubscriptionClient
+
+	GetEntityInfo(ctx context.Context, path string) ([]byte, error)
+}
+
 type UpwardliPartnerClientConfig struct {
 	banking.Config
 	Scope *string
@@ -123,7 +129,7 @@ func (p *partnerTokenProvider) GetToken(ctx context.Context) (string, error) {
 	return p.token, nil
 }
 
-func NewUpwardliPartnerClient(cfg UpwardliPartnerClientConfig) (webhooks.Client, error) {
+func NewUpwardliPartnerClient(cfg UpwardliPartnerClientConfig) (UpwardliPartnerClient, error) {
 	if cfg.Scope == nil {
 		defaultScope := "api:read api:write"
 		cfg.Scope = &defaultScope
@@ -193,4 +199,12 @@ func (c *partnerClient) DeleteWebhook(ctx context.Context, webhookID string) err
 	}
 
 	return nil
+}
+
+func (c *partnerClient) GetEntityInfo(ctx context.Context, path string) ([]byte, error) {
+	resp, err := c.client.Request(ctx, path, apiClient.WithMethod(apiClient.MethodGet))
+	if err != nil {
+		return nil, errors.Wrap(err, "error getting entity info")
+	}
+	return resp, nil
 }

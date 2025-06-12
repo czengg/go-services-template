@@ -4,16 +4,12 @@ import (
 	"template/internal/logger"
 )
 
-type Service interface {
-	WebhookProcessor
-}
-
 type service struct {
-	WebhookProcessor
+	WebhookManager
 }
 
-func NewService(logger logger.Logger, repo Repository, client Client) *service {
+func NewService(logger logger.Logger, repo Repository, client SubscriptionClient, provider provider) *service {
 	return &service{
-		WebhookProcessor: NewWebhookProcessor(logger, client, repo),
+		WebhookManager: NewWebhookManager(logger, client, repo, provider),
 	}
 }

@@ -9,6 +9,19 @@ import (
 	"time"
 )
 
+type UpwardliConsumer struct {
+	ID            string    `db:"id" json:"id"`
+	Pcid          string    `db:"pcid" json:"pcid"`
+	ExternalID    string    `db:"external_id" json:"externalId"`
+	IsActive      bool      `db:"is_active" json:"isActive"`
+	KycStatus     string    `db:"kyc_status" json:"kycStatus"`
+	TaxIDType     string    `db:"tax_id_type" json:"taxIdType"`
+	TaxIdentifier string    `db:"tax_identifier" json:"taxIdentifier"`
+	CreatedAt     time.Time `db:"created_at" json:"createdAt"`
+	UpdatedAt     time.Time `db:"updated_at" json:"updatedAt"`
+	Deleted       bool      `db:"deleted" json:"deleted"`
+}
+
 type UpwardliWebhook struct {
 	ID          string        `db:"id" json:"id"`
 	WebhookName string        `db:"webhook_name" json:"webhookName"`

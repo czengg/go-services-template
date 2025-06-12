@@ -12,6 +12,7 @@ type Querier interface {
 	CreateUpwardliWebhook(ctx context.Context, arg CreateUpwardliWebhookParams) error
 	GetAllUpwardliWebhooks(ctx context.Context) ([]GetAllUpwardliWebhooksRow, error)
 	GetUpwardliWebhookById(ctx context.Context, id string) (GetUpwardliWebhookByIdRow, error)
+	SaveUpwardliConsumer(ctx context.Context, arg SaveUpwardliConsumerParams) error
 	SoftDeleteUpwardliWebhook(ctx context.Context, id string) error
 }
 

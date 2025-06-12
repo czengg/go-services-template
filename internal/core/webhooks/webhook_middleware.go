@@ -57,7 +57,7 @@ func WithWebhookVerification(verifier webhookSDK.WebhookVerifier, logger *zap.Lo
 			}
 
 			compare := mapping["t"] + "." + string(body)
-			if !verifier.VerifyWebhook([]byte(compare), []byte(mapping["v1"])) {
+			if !verifier.Verify([]byte(compare), []byte(mapping["v1"])) {
 				writeErrorResponse(w, "invalid signature")
 				return
 			}

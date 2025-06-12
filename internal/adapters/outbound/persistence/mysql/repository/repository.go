@@ -1,6 +1,7 @@
 package repository
 
 import (
+	banking "template/internal/core/banking"
 	webhooks "template/internal/core/webhooks"
 	"template/internal/logger"
 
@@ -11,6 +12,7 @@ import (
 
 type Repository interface {
 	webhooks.Repository
+	banking.Repository
 }
 
 type repository struct {

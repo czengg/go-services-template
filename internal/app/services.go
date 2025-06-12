@@ -11,7 +11,7 @@ type services struct {
 }
 
 func newServices(config config.Config, logger logger.Logger, repos repositories, clients clients) services {
-	webhooksService := webhooks.NewService(logger, repos.Repository, clients.UpwardliPartner)
+	webhooksService := webhooks.NewService(logger, repos.Repository, clients.UpwardliPartner, webhooks.ProviderUpwardli)
 	if webhooksService == nil {
 		logger.Fatal("failed to create upwardli service")
 	}

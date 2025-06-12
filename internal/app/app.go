@@ -26,9 +26,11 @@ func NewApp(cfg config.Config, logger logger.Logger) *App {
 
 	clients := newClients(cfg, logger)
 
+	webhookProcessors := newWebhookProcessors(logger, clients)
+
 	services := newServices(cfg, logger, repos, clients)
 
-	router := newRouter(cfg, services)
+	router := newRouter(cfg, services, webhookProcessors)
 
 	return &App{
 		Server: router,

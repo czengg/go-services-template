@@ -7,7 +7,7 @@ import (
 )
 
 type WebhookVerifier interface {
-	VerifyWebhook(message, signature []byte) bool
+	Verify(message, signature []byte) bool
 }
 
 type Verifier struct {
@@ -20,7 +20,7 @@ func NewVerifier(secret string) *Verifier {
 	}
 }
 
-func (v *Verifier) VerifyWebhook(body, signature []byte) bool {
+func (v *Verifier) Verify(body, signature []byte) bool {
 	mac := hmac.New(crypto.SHA256.New, []byte(v.secret))
 	mac.Write(body)
 

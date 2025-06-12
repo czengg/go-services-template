@@ -15,9 +15,9 @@ type router struct {
 	Upwardli httphandlers.UpwardliHandler
 }
 
-func newRouter(cfg config.Config, s services) router {
+func newRouter(cfg config.Config, s services, w webhookProcessors) router {
 	return router{
-		Upwardli: httphandlers.NewUpwardliHandler(cfg, s.webhooks),
+		Upwardli: httphandlers.NewUpwardliHandler(cfg, s.webhooks, w.UpwardliProcessor),
 	}
 }
 
